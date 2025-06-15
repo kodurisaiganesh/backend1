@@ -5,12 +5,10 @@ from dotenv import load_dotenv
 import dj_database_url
 import pymysql
 
-# Optional: Use PyMySQL if mysqlclient is not working
+# Use PyMySQL as a MySQL client if needed
 pymysql.install_as_MySQLdb()
 
-# --------------------------------------------------
-# LOAD ENVIRONMENT VARIABLES
-# --------------------------------------------------
+# Load .env variables
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,20 +18,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # --------------------------------------------------
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'unsafe-default-secret-key')
 DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
-
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 
 # --------------------------------------------------
 # APPLICATIONS
 # --------------------------------------------------
 INSTALLED_APPS = [
-    # Third-party
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
     'storages',
 
-    # Django
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,7 +36,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Local apps
     'blog',
 ]
 
@@ -85,11 +79,11 @@ TEMPLATES = [
 ]
 
 # --------------------------------------------------
-# DATABASE (Using dj-database-url and Railway URL)
+# DATABASE
 # --------------------------------------------------
 DATABASES = {
     'default': dj_database_url.config(
-        default="mysql://root:gBBLFhamprYhZmnnkDUzcUGkWeHUTkAg@centerbeam.proxy.rlwy.net:16875/railway"
+        default=os.getenv("DATABASE_URL")
     )
 }
 
@@ -112,7 +106,7 @@ USE_I18N = True
 USE_TZ = True
 
 # --------------------------------------------------
-# STATIC & MEDIA FILES (S3 if configured)
+# STATIC & MEDIA FILES (S3 or Local)
 # --------------------------------------------------
 USE_S3 = os.getenv('USE_S3', 'False') == 'True'
 
@@ -132,11 +126,9 @@ if USE_S3:
 
     STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
 else:
     STATIC_URL = '/static/'
     STATIC_ROOT = BASE_DIR / 'staticfiles'
-
     MEDIA_URL = '/media/'
     MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -158,14 +150,9 @@ SIMPLE_JWT = {
 }
 
 # --------------------------------------------------
-# CORS HEADERS
+# CORS
 # --------------------------------------------------
-CORS_ALLOWED_ORIGINS = [
-    'https://blogappfront.netlify.app',
-    'http://localhost:3000',
-    'http://localhost:5173',
-]
-
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '').split(',')
 CORS_ALLOW_CREDENTIALS = True
 
 # --------------------------------------------------
