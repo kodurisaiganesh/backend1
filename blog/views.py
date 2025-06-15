@@ -1,6 +1,6 @@
 # blog/views.py
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework.exceptions import PermissionDenied
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.views import APIView
@@ -35,8 +35,10 @@ class BlogViewSet(viewsets.ModelViewSet):
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
-# ✅ Register view added below
+# ✅ Register view updated with AllowAny permission
 class RegisterView(APIView):
+    permission_classes = [AllowAny]  # Allow public access to register
+
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
