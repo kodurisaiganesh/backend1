@@ -2,6 +2,11 @@ import os
 from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
+import dj_database_url
+import pymysql
+
+# Optional: Use PyMySQL if mysqlclient is not working
+pymysql.install_as_MySQLdb()
 
 # --------------------------------------------------
 # LOAD ENVIRONMENT VARIABLES
@@ -80,17 +85,12 @@ TEMPLATES = [
 ]
 
 # --------------------------------------------------
-# DATABASE (MySQL via Amazon RDS or local)
+# DATABASE (Using dj-database-url and Railway URL)
 # --------------------------------------------------
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('MYSQL_DATABASE', 'blog_app'),
-        'USER': os.getenv('MYSQL_USER', 'blog_user'),
-        'PASSWORD': os.getenv('MYSQL_PASSWORD', 'password123'),
-        'HOST': os.getenv('MYSQL_HOST', 'localhost'),
-        'PORT': os.getenv('MYSQL_PORT', '3306'),
-    }
+    'default': dj_database_url.config(
+        default="mysql://root:gBBLFhamprYhZmnnkDUzcUGkWeHUTkAg@centerbeam.proxy.rlwy.net:16875/railway"
+    )
 }
 
 # --------------------------------------------------
@@ -160,10 +160,11 @@ SIMPLE_JWT = {
 # --------------------------------------------------
 # CORS HEADERS
 # --------------------------------------------------
-CORS_ALLOWED_ORIGINS = os.getenv(
-    'CORS_ALLOWED_ORIGINS',
-    'http://localhost:3000,http://localhost:5173'
-).split(',')
+CORS_ALLOWED_ORIGINS = [
+    'https://blogappfront.netlify.app',
+    'http://localhost:3000',
+    'http://localhost:5173',
+]
 
 CORS_ALLOW_CREDENTIALS = True
 
