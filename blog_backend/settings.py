@@ -79,11 +79,19 @@ TEMPLATES = [
 ]
 
 # --------------------------------------------------
-# DATABASE
+# DATABASE (Updated with timeouts + utf8mb4)
 # --------------------------------------------------
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv("DATABASE_URL")
+    'default': dj_database_url.parse(
+        os.getenv("DATABASE_URL"),
+        conn_max_age=10,
+        engine='django.db.backends.mysql',
+        options={
+            'charset': 'utf8mb4',
+            'connect_timeout': 10,
+            'read_timeout': 10,
+            'write_timeout': 10,
+        }
     )
 }
 
