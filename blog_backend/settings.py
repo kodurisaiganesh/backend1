@@ -79,14 +79,23 @@ TEMPLATES = [
 ]
 
 # ---------------------------
-# DATABASE
+# DATABASE (Improved for MySQL stability)
 # ---------------------------
 DATABASES = {
     'default': dj_database_url.parse(
         os.getenv("DATABASE_URL"),
-        conn_max_age=10,
+        conn_max_age=60,
         engine='django.db.backends.mysql'
     )
+}
+
+DATABASES['default']['OPTIONS'] = {
+    'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+    'charset': 'utf8mb4',
+    'connect_timeout': 10,
+    'read_timeout': 10,
+    'write_timeout': 10,
+    'ssl': {'fake_flag_to_enable_tls': True},  # enables SSL for Railway
 }
 
 # ---------------------------
