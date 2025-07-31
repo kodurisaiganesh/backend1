@@ -5,24 +5,24 @@ from dotenv import load_dotenv
 import dj_database_url
 import pymysql
 
-# Use PyMySQL as a MySQL client if needed
+# MySQL compatibility
 pymysql.install_as_MySQLdb()
 
-# Load .env variables
+# Load environment variables
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# --------------------------------------------------
-# SECURITY SETTINGS
-# --------------------------------------------------
+# ---------------------------
+# SECURITY
+# ---------------------------
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'unsafe-default-secret-key')
 DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 
-# --------------------------------------------------
-# APPLICATIONS
-# --------------------------------------------------
+# ---------------------------
+# INSTALLED APPS
+# ---------------------------
 INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
@@ -39,9 +39,9 @@ INSTALLED_APPS = [
     'blog',
 ]
 
-# --------------------------------------------------
+# ---------------------------
 # MIDDLEWARE
-# --------------------------------------------------
+# ---------------------------
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -53,15 +53,15 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# --------------------------------------------------
+# ---------------------------
 # URLS & WSGI
-# --------------------------------------------------
+# ---------------------------
 ROOT_URLCONF = 'blog_backend.urls'
 WSGI_APPLICATION = 'blog_backend.wsgi.application'
 
-# --------------------------------------------------
+# ---------------------------
 # TEMPLATES
-# --------------------------------------------------
+# ---------------------------
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -78,26 +78,20 @@ TEMPLATES = [
     },
 ]
 
-# --------------------------------------------------
-# DATABASE (Updated with timeouts + utf8mb4)
-# --------------------------------------------------
+# ---------------------------
+# DATABASE
+# ---------------------------
 DATABASES = {
     'default': dj_database_url.parse(
         os.getenv("DATABASE_URL"),
         conn_max_age=10,
-        engine='django.db.backends.mysql',
-        options={
-            'charset': 'utf8mb4',
-            'connect_timeout': 10,
-            'read_timeout': 10,
-            'write_timeout': 10,
-        }
+        engine='django.db.backends.mysql'
     )
 }
 
-# --------------------------------------------------
+# ---------------------------
 # PASSWORD VALIDATION
-# --------------------------------------------------
+# ---------------------------
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -105,17 +99,17 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# --------------------------------------------------
+# ---------------------------
 # TIMEZONE / LANGUAGE
-# --------------------------------------------------
+# ---------------------------
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# --------------------------------------------------
-# STATIC & MEDIA FILES (S3 or Local)
-# --------------------------------------------------
+# ---------------------------
+# STATIC & MEDIA
+# ---------------------------
 USE_S3 = os.getenv('USE_S3', 'False') == 'True'
 
 if USE_S3:
@@ -140,9 +134,9 @@ else:
     MEDIA_URL = '/media/'
     MEDIA_ROOT = BASE_DIR / 'media'
 
-# --------------------------------------------------
+# ---------------------------
 # REST FRAMEWORK + JWT
-# --------------------------------------------------
+# ---------------------------
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -157,15 +151,15 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-# --------------------------------------------------
+# ---------------------------
 # CORS
-# --------------------------------------------------
+# ---------------------------
 CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '').split(',')
 CORS_ALLOW_CREDENTIALS = True
 
-# --------------------------------------------------
+# ---------------------------
 # LOGGING
-# --------------------------------------------------
+# ---------------------------
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -178,7 +172,7 @@ LOGGING = {
     },
 }
 
-# --------------------------------------------------
+# ---------------------------
 # DEFAULT FIELD
-# --------------------------------------------------
+# ---------------------------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
